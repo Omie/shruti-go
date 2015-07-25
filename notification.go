@@ -2,6 +2,7 @@ package shrutigo
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"path"
 	"time"
@@ -90,12 +91,16 @@ func (client *Client) PushNotification(n Notification) (err error) {
 	url := client.Protocol + path.Join(client.Host, "notifications")
 
 	request := gorequest.New()
-	_, _, errs := request.Post(url).
+	resp, body, errs := request.Post(url).
 		Send(n).
 		End()
 
 	if errs != nil {
 		err = errs[0]
+	}
+
+	if resp.StatusCode == 500 {
+		err = errors.New(body)
 	}
 
 	return
