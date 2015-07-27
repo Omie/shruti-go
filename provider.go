@@ -65,3 +65,33 @@ func (client *Client) RegisterProvider(p Provider) (err error) {
 
 	return
 }
+
+func (client *Client) UpdateProvider(p Provider) (err error) {
+
+	url := client.Protocol + path.Join(client.Host, "providers", p.Name)
+
+	request := gorequest.New()
+	_, _, errs := request.Put(url).
+		Send(p).
+		End()
+
+	if errs != nil {
+		err = errs[0]
+	}
+
+	return
+}
+
+func (client *Client) DeleteProvider(pname string) (err error) {
+
+	url := client.Protocol + path.Join(client.Host, "providers", pname)
+
+	request := gorequest.New()
+	_, _, errs := request.Delete(url).End()
+
+	if errs != nil {
+		err = errs[0]
+	}
+
+	return
+}
